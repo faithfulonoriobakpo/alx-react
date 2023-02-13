@@ -1,69 +1,121 @@
-import React, { useEffect, useState } from "react";
+import  React from 'react';
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
 
-function Login(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [enableSubmit, setEnableSubmit] = useState(false);
+class Login extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			email: '',
+			password: '',
+			enableSumit: false
+		};
+		this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+		this.handleChangeEmail = this.handleChangeEmail.bind(this);
+		this.handleChangePassword = this.handleChangePassword.bind(this);
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    props.logIn(e.target.elements.email.value, e.target.elements.password.value);
-  };
+	}
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
-  };
+	handleLoginSubmit(event) {
+		event.preventDefault();
+		this.props.logIn(this.state.email, this.state.password);
+	}
 
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value);
-  };
+	handleChangeEmail(event) {
+		this.setState({ email: event.target.value });
+		if (event.target.value.length > 0 && this.state.password.length > 0) {
+			this.setState({ enableSumit: true })
+		} else {
+			this.setState({ enableSumit: false })
+		}
+	}
 
-  useEffect(() => {
-    if (email !== "" && password !== "") {
-      setEnableSubmit(true);
-    } else {
-      if (enableSubmit !== false) {
-        setEnableSubmit(false);
-      }
-    }
-  }, [email, password]);
+	handleChangePassword(event) {
+		this.setState({ password: event.target.value });
+		if (event.target.value.length > 0 && this.state.email.length > 0) {
+			this.setState({ enableSumit: true })
+		} else {
+			this.setState({ enableSumit: false })
+		}
+	}
 
-  return (
-    <React.Fragment>
-      <div className={css(styles["App-body"])}>
-        <p>Login to access the full dashboard</p>
-        <form onSubmit={handleLoginSubmit}>
-          <label htmlFor="email">Email:</label>
-          <input className={css(styles.input)} type="email" id="email" name="email" value={email} onChange={handleChangeEmail} />
-          <label htmlFor="password">Password:</label>
-          <input className={css(styles.input)} type="password" id="password" name="password" value={password} onChange={handleChangePassword} />
-          <input type="submit" value="Ok" disabled={!enableSubmit} />
-        </form>
-      </div>
-    </React.Fragment>
-  );
+	render () {
+		return (
+			<React.Fragment>
+				<div className={css(styles.Login)}>
+					<p>Login to access to the full dashboard</p>
+					<form action='' onSubmit={this.handleLoginSubmit}>
+						<div className={css(styles.inputGroup)}> 
+							<label htmlFor="email" >Email:</label>
+							<input
+								id="email"
+								type="email"
+								className={css(styles.LoginInput)}
+								value={this.state.email}
+								onChange={this.handleChangeEmail}
+							/>
+						</div>
+						<div className={css(styles.inputGroup)}>
+							<label htmlFor="password" >Password:</label>
+							<input
+								id="password"
+								type="password"
+								className={css(styles.LoginInput)}
+								value={this.state.password}
+								onChange={this.handleChangePassword}
+							/>
+						</div>
+						<input type='submit' value='Ok' disabled={!this.state.enableSumit} className={css(styles.loginButton)} />
+					</form>
+				</div>
+			</React.Fragment>
+		);
+	}
 }
 
-Login.propTypes = {
-  logIn: PropTypes.func,
+const responsive = {
+	small: '@media screen and (max-width: 900px)'
 };
 
 const styles = StyleSheet.create({
-  "App-body": {
-    fontSize: "1rem",
-    padding: "2em",
-    height: "45%",
-    "@media (max-width: 900px)": {
-      display: "flex",
-      flexDirection: "column",
-    },
-  },
+	Login: {
+		fontFamily: 'Arial, Helvetica, sans-serif',
+		padding: '50px',
+		[responsive.small]: {
+			padding: 0
+		}
+	},
 
-  input: {
-    margin: "10px",
-  },
+	Loginp: {
+		top: '3rem',
+		left: '2.5rem'
+	},
+
+	Logindiv: {
+		marginLeft: '-5px',
+		marginTop: '15px'
+	},
+
+	LoginInput: {
+		margin: '5px',
+		[responsive.small]: {
+			border: 'none'
+		}
+	},
+
+	inputGroup: {
+		display: 'inline',
+		[responsive.small]: {
+			display: 'flex'
+		}
+	},
+
+	loginButton: {
+		[responsive.small]: {
+			border: '3px solid orange',
+			borderRadius: '5px',
+			
+		}
+	}
 });
 
 export default Login;
